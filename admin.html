@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Download Hub — Admin</title>
+<style>
+:root {
+  --bg: #0a0c10;
+  --surface: #111520;
+  --card: #161c2a;
+  --border: #1f2a3d;
+  --accent: #5865F2;
+  --accent-hover: #4752c4;
+  --danger: #e74c3c;
+  --success: #2ecc71;
+  --warn: #ff9f1c;
+  --text: #e8ecf4;
+  --muted: #7a85a0;
+  --input-bg: #0d1017;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ===== LOGIN SCREEN ===== */
+#loginScreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 50% 40%, #0d1535 0%, var(--bg) 70%);
+}
+
+.login-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.login-box h1 { font-size: 1.6rem; margin-bottom: 0.3rem; }
+.login-box p  { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+
+.lock-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.field { margin-bottom: 1.2rem; }
+.field label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.4rem; }
+.field input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.field input:focus { border-color: var(--accent); }
+.field input.error { border-color: var(--danger); animation: shake 0.3s ease; }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25%      { transform: translateX(-6px); }
+  75%      { transform: translateX(6px); }
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 8px 20px rgba(88,101,242,0.4);
+}
+.btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.login-error {
+  background: rgba(231,76,60,0.1);
+  border: 1px solid rgba(231,76,60,0.3);
+  color: #f08080;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+/* ===== ADMIN PANEL ===== */
+#adminPanel { display: none; }
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar-left { display: flex; align-items: center; gap: 0.75rem; }
+.topbar-logo { font-size: 1.2rem; font-weight: 800; }
+.topbar-badge {
+  background: rgba(88,101,242,0.2);
+  color: var(--accent);
+  border: 1px solid rgba(88,101,242,0.35);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.topbar-right { display: flex; gap: 0.75rem; align-items: center; }
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-sm:hover { color: var(--text); border-color: var(--muted); }
+
+.btn-accent {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-accent:hover { background: var(--accent-hover); }
+
+.btn-danger {
+  padding: 0.4rem 0.8rem;
+  border-radius: 7px;
+  border: 1.5px solid rgba(231,76,60,0.3);
+  background: rgba(231,76,60,0.08);
+  color: #f08080;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-danger:hover { background: rgba(231,76,60,0.2); border-color: var(--danger); }
+
+.main-content { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+
+/* Settings panel */
+.settings-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.settings-header {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.settings-header:hover { background: rgba(255,255,255,0.02); }
+.settings-header h3 { font-size: 0.95rem; display: flex; align-items: center; gap: 0.6rem; }
+.settings-body {
+  padding: 0 1.5rem 1.5rem;
+  display: none;
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+}
+.settings-body.open { display: block; }
+
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+@media (max-width: 600px) { .settings-grid { grid-template-columns: 1fr; } }
+
+.settings-note {
+  background: rgba(255,159,28,0.08);
+  border: 1px solid rgba(255,159,28,0.25);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  color: #d4a855;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.settings-status {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.75rem;
+}
+.settings-status.ok    { color: var(--success); }
+.settings-status.error { color: var(--danger); }
+
+/* Card list */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.section-header h2 { font-size: 1.1rem; }
+
+.card-count {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+
+.cards-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.admin-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  transition: border-color 0.2s;
+}
+.admin-card:hover { border-color: #2d3a52; }
+
+.admin-card-info { flex: 1; min-width: 0; }
+.admin-card-info h4 { font-size: 0.95rem; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.admin-card-meta { font-size: 0.78rem; color: var(--muted); }
+
+.admin-card-tag {
+  display: inline-block;
+  background: rgba(255,159,28,0.12);
+  color: var(--warn);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-right: 0.5rem;
+}
+
+.new-badge {
+  display: inline-block;
+  background: rgba(46,204,113,0.15);
+  color: var(--success);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.admin-card-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+
+.btn-edit {
+  padding: 0.4rem 0.8rem;
+  border-radius: 7px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-edit:hover { color: var(--text); border-color: var(--muted); }
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--muted);
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+}
+.empty-state p { margin-top: 0.5rem; font-size: 0.9rem; }
+
+/* Add/Edit form */
+#formPanel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: none;
+  animation: fadeUp 0.25s ease;
+}
+#formPanel h3 { font-size: 1rem; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+.form-grid .full { grid-column: 1 / -1; }
+
+.form-field label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.4rem; }
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 9px;
+  border: 1.5px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus { border-color: var(--accent); }
+.form-field textarea { resize: vertical; min-height: 70px; }
+
+.form-field select option { background: #1a1f2e; }
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+}
+.checkbox-field input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--success); cursor: pointer; }
+.checkbox-field label { font-size: 0.88rem; color: var(--text); cursor: pointer; margin: 0; }
+
+.form-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+
+/* Save status bar */
+#saveBar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 0.9rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 40;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+#saveBar.visible { transform: translateY(0); }
+#saveBar .save-msg { font-size: 0.88rem; color: var(--muted); }
+#saveBar .save-actions { display: flex; gap: 0.75rem; }
+
+/* Toast */
+#adminToast {
+  position: fixed;
+  top: 5rem;
+  right: 2rem;
+  z-index: 100;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+}
+#adminToast.show { opacity: 1; transform: translateY(0); }
+
+/* Change password section */
+.change-pw { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+.change-pw h4 { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.75rem; }
+.pw-row { display: flex; gap: 0.75rem; align-items: flex-end; flex-wrap: wrap; }
+.pw-row .form-field { flex: 1; min-width: 160px; }
+
+/* Loading overlay */
+#loadingOverlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  backdrop-filter: blur(3px);
+}
+#loadingOverlay.show { display: flex; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#loadingOverlay p { color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <p id="loadingMsg">Saving to GitHub…</p>
+</div>
+
+<div id="adminToast"></div>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="loginScreen">
+  <div class="login-box">
+    <span class="lock-icon">🔐</span>
+    <h1>Admin Panel</h1>
+    <p>Download Hub management console</p>
+    <div class="login-error" id="loginError">Incorrect password. Try again.</div>
+    <div class="field">
+      <label for="passwordInput">Password</label>
+      <input type="password" id="passwordInput" placeholder="Enter admin password" autocomplete="current-password" />
+    </div>
+    <button class="btn-primary" id="loginBtn">Sign In</button>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div id="adminPanel">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-logo">⚙️ Download Hub</span>
+      <span class="topbar-badge">Admin</span>
+    </div>
+    <div class="topbar-right">
+      <a href="index.html" class="btn-sm">← View Site</a>
+      <button class="btn-sm" id="logoutBtn">Log Out</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+
+    <!-- GitHub Settings -->
+    <div class="settings-panel">
+      <div class="settings-header" id="settingsToggle">
+        <h3>⚙️ GitHub Settings <span style="color:var(--muted);font-size:0.8rem;font-weight:400">— required to save changes</span></h3>
+        <span id="settingsArrow" style="color:var(--muted)">▼</span>
+      </div>
+      <div class="settings-body" id="settingsBody">
+        <div class="settings-note">
+          ⚠️ To save cards to your repo, enter your GitHub details below. Your Personal Access Token needs <strong>Contents: Read &amp; Write</strong> permission.
+          Create one at <strong>GitHub → Settings → Developer Settings → Personal Access Tokens → Fine-grained tokens</strong>.
+          These are stored only in your browser's localStorage.
+        </div>
+        <div class="settings-grid">
+          <div class="form-field">
+            <label>GitHub Username / Org</label>
+            <input type="text" id="ghOwner" placeholder="e.g. GreenGrunblocked" />
+          </div>
+          <div class="form-field">
+            <label>Repository Name</label>
+            <input type="text" id="ghRepo" placeholder="e.g. Download-Hub" />
+          </div>
+          <div class="form-field">
+            <label>Branch</label>
+            <input type="text" id="ghBranch" placeholder="main" />
+          </div>
+          <div class="form-field">
+            <label>cards.json path in repo</label>
+            <input type="text" id="ghPath" placeholder="cards.json" />
+          </div>
+          <div class="form-field" style="grid-column:1/-1">
+            <label>Personal Access Token</label>
+            <input type="password" id="ghToken" placeholder="github_pat_…" autocomplete="off" />
+          </div>
+        </div>
+        <button class="btn-accent" id="saveSettings">Save Settings</button>
+        <div class="settings-status" id="settingsStatus"></div>
+
+        <!-- Change password -->
+        <div class="change-pw">
+          <h4>🔑 Change Admin Password</h4>
+          <div class="pw-row">
+            <div class="form-field">
+              <label>New Password</label>
+              <input type="password" id="newPw1" placeholder="New password" />
+            </div>
+            <div class="form-field">
+              <label>Confirm Password</label>
+              <input type="password" id="newPw2" placeholder="Confirm password" />
+            </div>
+            <button class="btn-sm" id="changePwBtn" style="margin-bottom:0;height:38px">Update</button>
+          </div>
+          <div class="settings-status" id="pwStatus"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Form -->
+    <div id="formPanel">
+      <h3 id="formTitle">➕ Add New Download Card</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Name *</label>
+          <input type="text" id="fName" placeholder="e.g. CoolClient 3.0" />
+        </div>
+        <div class="form-field">
+          <label>Version *</label>
+          <input type="text" id="fVersion" placeholder="e.g. 3.0" />
+        </div>
+        <div class="form-field">
+          <label>Tag (label shown on card)</label>
+          <select id="fTag">
+            <option value="CLIENT">CLIENT</option>
+            <option value="HTML">HTML</option>
+            <option value="ZIP">ZIP</option>
+            <option value="TOOL">TOOL</option>
+            <option value="OTHER">OTHER</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>File Type</label>
+          <select id="fFileType">
+            <option value="ZIP">ZIP</option>
+            <option value="HTML">HTML</option>
+            <option value="EXE">EXE</option>
+            <option value="OTHER">OTHER</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label>Asset filename (the actual file in your repo) *</label>
+          <input type="text" id="fAsset" placeholder="e.g. CoolClient.zip or some file.html" />
+        </div>
+        <div class="form-field full">
+          <label>Description</label>
+          <textarea id="fDesc" placeholder="Short description of this download..."></textarea>
+        </div>
+        <div class="form-field full">
+          <div class="checkbox-field">
+            <input type="checkbox" id="fIsNew" />
+            <label for="fIsNew">Show "NEW" badge on this card</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" id="saveCardBtn" style="max-width:180px">Save Card</button>
+        <button class="btn-sm" id="cancelFormBtn">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Cards list -->
+    <div class="section-header">
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <h2>Download Cards</h2>
+        <span class="card-count" id="cardCount">0 cards</span>
+      </div>
+      <button class="btn-accent" id="addCardBtn">+ Add Card</button>
+    </div>
+
+    <div class="cards-list" id="adminCardsList">
+      <div class="empty-state">
+        <div style="font-size:2rem">📭</div>
+        <p>No cards loaded yet. Check your GitHub settings.</p>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <!-- Save bar -->
+  <div id="saveBar">
+    <span class="save-msg">⚠️ You have unsaved changes</span>
+    <div class="save-actions">
+      <button class="btn-sm" id="discardBtn">Discard</button>
+      <button class="btn-accent" id="publishBtn">🚀 Publish to GitHub</button>
+    </div>
+  </div>
+
+</div><!-- /adminPanel -->
+
+<script>
+// ===== DEFAULT PASSWORD HASH =====
+// Default password is: DownloadHub2026
+// SHA-256 hash stored in localStorage under 'dh_pw_hash'
+// If not set, use the default below
+const DEFAULT_PW_HASH = '3d9a5c2e8b1f4a7d0e6c9f2a5b8d1e4a7c0f3b6e9d2a5c8f1b4e7a0d3c6f9b2';
+
+// We'll compute real hash dynamically, this is just fallback
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// ===== STATE =====
+let cards = [];
+let dirty = false;
+let editingId = null;
+
+// ===== LOGIN =====
+async function initLogin() {
+  // Set default hash if not already set
+  if (!localStorage.getItem('dh_pw_hash')) {
+    const hash = await sha256('DownloadHub2026');
+    localStorage.setItem('dh_pw_hash', hash);
+  }
+}
+initLogin();
+
+const loginBtn  = document.getElementById('loginBtn');
+const pwInput   = document.getElementById('passwordInput');
+const loginErr  = document.getElementById('loginError');
+
+async function attemptLogin() {
+  const pw = pwInput.value;
+  if (!pw) return;
+  loginBtn.disabled = true;
+  loginBtn.textContent = 'Checking…';
+  const hash = await sha256(pw);
+  const stored = localStorage.getItem('dh_pw_hash');
+  if (hash === stored) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    loadSettingsFromStorage();
+    loadCardsFromGitHub();
+  } else {
+    loginErr.style.display = 'block';
+    pwInput.classList.add('error');
+    setTimeout(() => pwInput.classList.remove('error'), 500);
+  }
+  loginBtn.disabled = false;
+  loginBtn.textContent = 'Sign In';
+  pwInput.value = '';
+}
+
+loginBtn.addEventListener('click', attemptLogin);
+pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
+
+// ===== LOGOUT =====
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  document.getElementById('adminPanel').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  cards = []; dirty = false;
+});
+
+// ===== SETTINGS =====
+function loadSettingsFromStorage() {
+  document.getElementById('ghOwner').value  = localStorage.getItem('dh_owner')  || 'GreenGrunblocked';
+  document.getElementById('ghRepo').value   = localStorage.getItem('dh_repo')   || 'Download-Hub';
+  document.getElementById('ghBranch').value = localStorage.getItem('dh_branch') || 'main';
+  document.getElementById('ghPath').value   = localStorage.getItem('dh_path')   || 'cards.json';
+  document.getElementById('ghToken').value  = localStorage.getItem('dh_token')  || '';
+}
+
+document.getElementById('saveSettings').addEventListener('click', () => {
+  localStorage.setItem('dh_owner',  document.getElementById('ghOwner').value.trim());
+  localStorage.setItem('dh_repo',   document.getElementById('ghRepo').value.trim());
+  localStorage.setItem('dh_branch', document.getElementById('ghBranch').value.trim() || 'main');
+  localStorage.setItem('dh_path',   document.getElementById('ghPath').value.trim() || 'cards.json');
+  localStorage.setItem('dh_token',  document.getElementById('ghToken').value.trim());
+  const st = document.getElementById('settingsStatus');
+  st.textContent = '✅ Settings saved!';
+  st.className = 'settings-status ok';
+  setTimeout(() => { st.textContent = ''; st.className = 'settings-status'; }, 3000);
+  // Reload cards with new settings
+  loadCardsFromGitHub();
+});
+
+// Settings accordion
+document.getElementById('settingsToggle').addEventListener('click', () => {
+  const body  = document.getElementById('settingsBody');
+  const arrow = document.getElementById('settingsArrow');
+  const open  = body.classList.toggle('open');
+  arrow.textContent = open ? '▲' : '▼';
+});
+
+// Change password
+document.getElementById('changePwBtn').addEventListener('click', async () => {
+  const p1 = document.getElementById('newPw1').value;
+  const p2 = document.getElementById('newPw2').value;
+  const st = document.getElementById('pwStatus');
+  if (!p1) { st.textContent = 'Enter a new password.'; st.className = 'settings-status error'; return; }
+  if (p1 !== p2) { st.textContent = 'Passwords do not match.'; st.className = 'settings-status error'; return; }
+  const hash = await sha256(p1);
+  localStorage.setItem('dh_pw_hash', hash);
+  document.getElementById('newPw1').value = '';
+  document.getElementById('newPw2').value = '';
+  st.textContent = '✅ Password updated!';
+  st.className = 'settings-status ok';
+  setTimeout(() => { st.textContent = ''; st.className = 'settings-status'; }, 3000);
+});
+
+// ===== GITHUB API =====
+function getGHSettings() {
+  return {
+    owner:  localStorage.getItem('dh_owner')  || '',
+    repo:   localStorage.getItem('dh_repo')   || '',
+    branch: localStorage.getItem('dh_branch') || 'main',
+    path:   localStorage.getItem('dh_path')   || 'cards.json',
+    token:  localStorage.getItem('dh_token')  || ''
+  };
+}
+
+async function loadCardsFromGitHub() {
+  const { owner, repo, branch, path, token } = getGHSettings();
+  if (!owner || !repo || !token) {
+    showAdminToast('⚙️ Enter GitHub settings above to load cards', 4000);
+    return;
+  }
+  showLoading('Loading cards from GitHub…');
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
+      { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' } }
+    );
+    if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+    const data = await res.json();
+    cards = JSON.parse(atob(data.content.replace(/\n/g, '')));
+    renderAdminCards();
+    showAdminToast('✅ Cards loaded from GitHub');
+  } catch (e) {
+    showAdminToast('❌ Failed to load cards: ' + e.message, 5000);
+  } finally {
+    hideLoading();
+  }
+}
+
+async function publishToGitHub() {
+  const { owner, repo, branch, path, token } = getGHSettings();
+  if (!owner || !repo || !token) {
+    showAdminToast('⚙️ Fill in GitHub settings first', 4000);
+    return;
+  }
+  showLoading('Publishing to GitHub…');
+  try {
+    // Get current file SHA (required for update)
+    const getRes = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
+      { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' } }
+    );
+    let sha = null;
+    if (getRes.ok) {
+      const fileData = await getRes.json();
+      sha = fileData.sha;
+    }
+
+    // Encode new content
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(cards, null, 2))));
+
+    const body = {
+      message: `admin: update cards.json (${cards.length} cards)`,
+      content,
+      branch
+    };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putRes.ok) {
+      const err = await putRes.json();
+      throw new Error(err.message || putRes.status);
+    }
+    dirty = false;
+    hideSaveBar();
+    showAdminToast('🚀 Published! GitHub Pages will update in ~30 seconds.');
+  } catch (e) {
+    showAdminToast('❌ Publish failed: ' + e.message, 6000);
+  } finally {
+    hideLoading();
+  }
+}
+
+// ===== RENDER CARDS =====
+function renderAdminCards() {
+  const list = document.getElementById('adminCardsList');
+  document.getElementById('cardCount').textContent = cards.length + ' card' + (cards.length !== 1 ? 's' : '');
+
+  if (cards.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div style="font-size:2rem">📭</div><p>No cards yet. Click "+ Add Card" to get started.</p></div>`;
+    return;
+  }
+
+  list.innerHTML = cards.map((card, i) => `
+    <div class="admin-card" data-id="${card.id}">
+      <div class="admin-card-info">
+        <h4>
+          <span class="admin-card-tag">${escHtml(card.tag)}</span>
+          ${escHtml(card.name)}
+          ${card.isNew ? '<span class="new-badge">NEW</span>' : ''}
+        </h4>
+        <div class="admin-card-meta">v${escHtml(card.version)} &bull; ${escHtml(card.fileType)} &bull; ${escHtml(card.asset)}</div>
+      </div>
+      <div class="admin-card-actions">
+        <button class="btn-edit" onclick="startEdit(${i})">✏️ Edit</button>
+        <button class="btn-danger" onclick="deleteCard(${i})">🗑 Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== ADD / EDIT FORM =====
+document.getElementById('addCardBtn').addEventListener('click', () => {
+  editingId = null;
+  clearForm();
+  document.getElementById('formTitle').textContent = '➕ Add New Download Card';
+  document.getElementById('saveCardBtn').textContent = 'Add Card';
+  document.getElementById('formPanel').style.display = 'block';
+  document.getElementById('fName').focus();
+  document.getElementById('formPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+document.getElementById('cancelFormBtn').addEventListener('click', () => {
+  document.getElementById('formPanel').style.display = 'none';
+  editingId = null;
+  clearForm();
+});
+
+function clearForm() {
+  ['fName','fVersion','fAsset','fDesc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fTag').value = 'CLIENT';
+  document.getElementById('fFileType').value = 'ZIP';
+  document.getElementById('fIsNew').checked = false;
+}
+
+function startEdit(index) {
+  const card = cards[index];
+  editingId = index;
+  document.getElementById('fName').value    = card.name;
+  document.getElementById('fVersion').value = card.version;
+  document.getElementById('fTag').value     = card.tag;
+  document.getElementById('fFileType').value= card.fileType;
+  document.getElementById('fAsset').value   = card.asset;
+  document.getElementById('fDesc').value    = card.description;
+  document.getElementById('fIsNew').checked = !!card.isNew;
+  document.getElementById('formTitle').textContent = '✏️ Edit: ' + card.name;
+  document.getElementById('saveCardBtn').textContent = 'Save Changes';
+  document.getElementById('formPanel').style.display = 'block';
+  document.getElementById('formPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.getElementById('saveCardBtn').addEventListener('click', () => {
+  const name    = document.getElementById('fName').value.trim();
+  const version = document.getElementById('fVersion').value.trim();
+  const asset   = document.getElementById('fAsset').value.trim();
+  if (!name || !version || !asset) {
+    showAdminToast('❌ Name, Version, and Asset are required');
+    return;
+  }
+
+  const cardData = {
+    id:          name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),
+    tag:         document.getElementById('fTag').value,
+    name,
+    version,
+    fileType:    document.getElementById('fFileType').value,
+    description: document.getElementById('fDesc').value.trim(),
+    asset,
+    isNew:       document.getElementById('fIsNew').checked || undefined
+  };
+  if (!cardData.isNew) delete cardData.isNew;
+
+  if (editingId !== null) {
+    cards[editingId] = cardData;
+    showAdminToast('✅ Card updated — publish to go live');
+  } else {
+    cards.push(cardData);
+    showAdminToast('✅ Card added — publish to go live');
+  }
+
+  renderAdminCards();
+  markDirty();
+  document.getElementById('formPanel').style.display = 'none';
+  clearForm();
+  editingId = null;
+});
+
+function deleteCard(index) {
+  const name = cards[index].name;
+  if (!confirm(`Delete "${name}"? This can't be undone until you publish.`)) return;
+  cards.splice(index, 1);
+  renderAdminCards();
+  markDirty();
+  showAdminToast(`🗑 "${name}" removed — publish to go live`);
+}
+
+// ===== DIRTY STATE / SAVE BAR =====
+function markDirty() {
+  dirty = true;
+  document.getElementById('saveBar').classList.add('visible');
+}
+function hideSaveBar() {
+  document.getElementById('saveBar').classList.remove('visible');
+}
+
+document.getElementById('publishBtn').addEventListener('click', publishToGitHub);
+document.getElementById('discardBtn').addEventListener('click', () => {
+  if (!confirm('Discard all unsaved changes and reload from GitHub?')) return;
+  dirty = false;
+  hideSaveBar();
+  loadCardsFromGitHub();
+});
+
+// ===== LOADING OVERLAY =====
+function showLoading(msg) {
+  document.getElementById('loadingMsg').textContent = msg || 'Loading…';
+  document.getElementById('loadingOverlay').classList.add('show');
+}
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.remove('show');
+}
+
+// ===== TOAST =====
+const adminToast = document.getElementById('adminToast');
+let toastTimer;
+function showAdminToast(msg, duration = 3500) {
+  adminToast.textContent = msg;
+  adminToast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => adminToast.classList.remove('show'), duration);
+}
+
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
