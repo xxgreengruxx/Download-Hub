@@ -187,5 +187,14 @@
     "fileType": "HTML",
     "description": "UTOPIA PROXY in a FILE",
     "asset": "Utopia_PROXY.html"
+  },
+  {
+    "id": "galaxy-v6",
+    "tag": "CLIENT",
+    "name": "Galaxy-v6",
+    "version": "6.0",
+    "fileType": "ZIP",
+    "description": "WORKING Roblox, proxy, and movies",
+    "asset": "GalaxyV6.html"
   }
 ]
