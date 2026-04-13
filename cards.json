@@ -1,14 +1,5 @@
 [
   {
-    "id": "roblox",
-    "tag": "CLIENT",
-    "name": "ROBLOX",
-    "version": "1.0",
-    "fileType": "HTML",
-    "description": "ROBLOX IN A FILE\nNOTE: if it doesn't work switch to the games menu and then click Roblox and it should work",
-    "asset": "Roblox.html"
-  },
-  {
     "id": "gn-math",
     "tag": "ZIP",
     "name": "gn-math",
@@ -187,15 +178,6 @@
     "fileType": "HTML",
     "description": "UTOPIA PROXY in a FILE",
     "asset": "Utopia_PROXY.html"
-  },
-  {
-    "id": "galaxy-v6",
-    "tag": "TOOL",
-    "name": "Galaxy-v6",
-    "version": "6.0",
-    "fileType": "ZIP",
-    "description": "WORKING Roblox, proxy, and movies",
-    "asset": "GalaxyV6.html"
   },
   {
     "id": "strongdog",
