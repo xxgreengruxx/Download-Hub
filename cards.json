@@ -214,5 +214,14 @@
     "fileType": "HTML",
     "description": "Proxy + Games + Apps, pretty goated",
     "asset": "unblockzone v5.html"
+  },
+  {
+    "id": "boredom",
+    "tag": "HTML",
+    "name": "Boredom",
+    "version": "2.0",
+    "fileType": "HTML",
+    "description": "Proxy and games AND discord (widget).",
+    "asset": "Boredom v2.html"
   }
 ]
