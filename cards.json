@@ -223,14 +223,5 @@
     "fileType": "HTML",
     "description": "Proxy and games AND discord (widget).",
     "asset": "Boredom v2.html"
-  },
-  {
-    "id": "boredom",
-    "tag": "HTML",
-    "name": "Boredom",
-    "version": "2.0",
-    "fileType": "HTML",
-    "description": "A proxy, few games, and a discord widget.",
-    "asset": "Boredom v2.html"
   }
 ]
