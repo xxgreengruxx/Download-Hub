@@ -493,7 +493,31 @@ window.addEventListener('resize', () => { resize(); createStars(); });
 resize(); createStars(); draw();
 
 function esc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// luminsdk games
+  <div id="games"></div>
 
+<script src="https://cdn.jsdelivr.net/gh/luminsdk/script@latest/lumin.min.js"></script>
+
+<script>
+  Lumin.init({
+    container: '#games',
+    theme: 'dark'
+  });
+  <body>
+  <h1>Games</h1>
+  <div id="games"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/luminsdk/script@latest/lumin.min.js"></script>
+  <script>
+    Lumin.init({
+      container: '#games',
+      theme: 'dark'
+    });
+  </script>
+</body>
+  <a href="games.html">Play Games</a>
+  // end
+</script>
 // ===== GO =====
 init();
 </script>
