@@ -206,7 +206,10 @@ footer a:hover { opacity: 1; }
       <input id="search" type="text" placeholder="Search downloads… (press / to focus)" />
       <button class="request-btn" id="openModal">📥 Request a Download</button>
     </div>
-    <a href="https://greengru34alt.github.io/staticproxFIX/" class="proxy-btn">Go To Proxy</a>
+   <div style="position:absolute; top:25px; right:30px; display:flex; gap:10px;">
+  <a href="https://greengru34alt.github.io/staticproxFIX/" class="proxy-btn">Proxy</a>
+  <button id="openGames" class="proxy-btn" style="background:#ff9f1c;">Games</button>
+</div>
   </header>
 
   <section class="downloads" id="cardsGrid">
@@ -496,5 +499,58 @@ function esc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&
 // ===== GO =====
 init();
 </script>
+  // ===== LUMIN GAMES =====
+let luminLoaded = false;
+
+document.getElementById('openGames').addEventListener('click', () => {
+  const overlay = document.getElementById('gamesOverlay');
+  overlay.style.display = 'flex';
+
+  // Only initialize once
+  if (!luminLoaded) {
+    setTimeout(() => {
+      Lumin.init({
+        container: '#gamesContainer',
+        theme: 'dark'
+      });
+      luminLoaded = true;
+    }, 100);
+  }
+});
+
+document.getElementById('closeGames').addEventListener('click', () => {
+  document.getElementById('gamesOverlay').style.display = 'none';
+}); 
+  <!-- Lumin Overlay -->
+<div id="gamesOverlay" style="
+  position:fixed;
+  inset:0;
+  background:#0f1115;
+  z-index:999;
+  display:none;
+  flex-direction:column;
+">
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 20px;
+    background:#161a22;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+  ">
+    <span style="font-weight:700;">Game Hub</span>
+    <button id="closeGames" style="
+      background:none;
+      border:none;
+      color:white;
+      font-size:1.5rem;
+      cursor:pointer;
+    ">×</button>
+  </div>
+
+  <div id="gamesContainer" style="flex:1; overflow:auto;"></div>
+</div>
+  <script src="https://cdn.jsdelivr.net/gh/luminsdk/script@latest/lumin.min.js"></script> 
+  
 </body>
 </html>
