@@ -1,3 +1,7 @@
+# Try out our new server! ip: wss://greengru.eagler.host
+ Hosting partner details are listed down below
+
+
 # 🕹️ Download Hub
 
 <div align="center">
@@ -148,5 +152,37 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 Made with ❤️ by [GreenGrunblocked](https://github.com/GreenGrunblocked)
 
 ⭐ **Star this repo if you find it useful!** ⭐
+
+🌐 Hosting Partner: Eagler Host
+
+Looking for fast, reliable, and developer-friendly hosting for your projects? Check out Eagler Host — a modern platform built for performance and simplicity.
+
+🚀 Why Choose Eagler Host?
+⚡ High Performance — Optimized servers for low latency and smooth gameplay
+🔧 Developer-Friendly — Easy setup, flexible configs, and full control
+🌍 Global Uptime — Stable infrastructure with strong reliability
+💸 Affordable Plans — Great value for both small and large projects
+🧩 Perfect for Eaglercraft & Web-based Games
+📢 Get Started
+
+👉 Visit Eagler Host: https://eagler.host
+
+👉 Deploy your server in minutes and start building today.
+
+🤝 Support the Project
+
+If you enjoy this project, consider supporting our hosting partner:
+
+Use Eagler Host for your next deployment
+Share it with friends or your community
+Help us grow by spreading the word ❤️
+📣 Promotion & Outreach Tips
+
+If you're forking or sharing this project, feel free to:
+
+Include Eagler Host in your own README
+Showcase your server builds hosted with them
+Tag or mention them in community posts (Discord, Reddit, etc.)
+Create tutorials or demos using their platform
 
 </div>
